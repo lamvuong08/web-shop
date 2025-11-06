@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
-import { Button, Col, Divider, Form, Input, notification, Row } from 'antd';
+import { Button, Divider, Form, Input, notification } from 'antd';
 import { loginApi } from '../util/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../components/context/auth.context';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import '../styles/login.css'; // 👈 thêm file CSS riêng
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -11,14 +12,13 @@ const LoginPage = () => {
 
   const onFinish = async (values) => {
     const { email, password } = values;
-
     const res = await loginApi(email, password);
 
     if (res && res.EC === 0) {
       localStorage.setItem('access_token', res.access_token);
       notification.success({
-        message: 'LOGIN USER',
-        description: 'Success',
+        message: 'Đăng nhập thành công',
+        description: 'Chào mừng bạn quay lại!',
       });
 
       setAuth({
@@ -32,69 +32,54 @@ const LoginPage = () => {
       navigate('/');
     } else {
       notification.error({
-        message: 'LOGIN USER',
-        description: res?.EM ?? 'error',
+        message: 'Đăng nhập thất bại',
+        description: res?.EM ?? 'Vui lòng kiểm tra lại thông tin!',
       });
     }
   };
 
   return (
-    <Row justify={'center'} style={{ marginTop: '30px' }}>
-      <Col xs={24} md={16} lg={8}>
-        <fieldset style={{ padding: '15px', margin: '5px', border: '1px solid #ccc', borderRadius: '5px' }}>
-          <legend>Đăng Nhập</legend>
-          <Form name="basic" onFinish={onFinish} autoComplete="off" layout="vertical">
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input your email!',
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Đăng Nhập</h2>
 
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input your password!',
-                },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
+        <Form name="basic" onFinish={onFinish} autoComplete="off" layout="vertical">
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: 'Vui lòng nhập email!' }]}
+          >
+            <Input prefix={<MailOutlined />} placeholder="Nhập email của bạn" />
+          </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Login
-              </Button>
-            </Form.Item>
-          </Form>
+          <Form.Item
+            label="Mật khẩu"
+            name="password"
+            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="••••••••" />
+          </Form.Item>
 
-          {/* Quên mật khẩu và Quay lại trang chủ */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            marginTop: 8 
-          }}>
-            <Link to={'/'}><ArrowLeftOutlined /> Quay lại trang chủ</Link>
-            <Link to={'/forgot-password'}>Quên mật khẩu?</Link>
-          </div>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Đăng Nhập
+            </Button>
+          </Form.Item>
+        </Form>
 
-          <Divider />
-          <div style={{ textAlign: 'center' }}>
-            Chưa có tài khoản? <Link to={'/register'}>Đăng ký tài khoản</Link>
-          </div>
-        </fieldset>
-      </Col>
-    </Row>
+        <div className="login-links">
+          <Link to="/">
+            <ArrowLeftOutlined /> Quay lại trang chủ
+          </Link>
+          <Link to="/forgot-password">Quên mật khẩu?</Link>
+        </div>
+
+        <Divider />
+        <div className="register-text">
+          Chưa có tài khoản? <Link to="/register">Đăng ký ngay</Link>
+        </div>
+      </div>
+    </div>
   );
 };
 

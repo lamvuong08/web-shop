@@ -49,7 +49,7 @@ const Header = () => {
         <div className="header-container">
             {/* LOGO */}
             <div className="header-left" onClick={() => navigate('/')}>
-                <h1 className="header-title">LVClothes</h1>
+                <h1 className="header-title">LVShop</h1>
             </div>
 
 

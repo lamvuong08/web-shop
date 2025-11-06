@@ -1,0 +1,52 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e0f2fe, #eef2ff);
+  padding: 24px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.register-card {
+  background: #fff;
+  width: 100%;
+  max-width: 540px;
+  padding: 28px 26px;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+  animation: fadeIn 0.4s ease;
+}
+
+.register-title {
+  text-align: center;
+  color: #1677ff;
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.register-form {
+  margin-top: 18px;
+}
+
+.register-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.register-links a { color: #1677ff; }
+.register-links a:hover { text-decoration: underline; }
+
+/* Ant overrides */
+.ant-steps .ant-steps-item-title { font-weight: 500; }
+.ant-btn-primary { height: 40px; font-weight: 500; border-radius: 6px; }
+.ant-form-item-label > label { font-weight: 500; color: #333; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

@@ -34,3 +34,15 @@ export const resetPasswordApi = (email, otp, password) => {
     const URL_API = "/v1/api/reset-password";
     return axios.post(URL_API, { email, otp, password });
 }
+
+// Registration OTP flow (placeholders; update to match backend)
+export const sendRegisterOtpApi = (email) => {
+    const URL_API = "/v1/api/register/otp";
+    return axios.post(URL_API, { email }, { skipAuth: true });
+}
+
+export const verifyRegisterOtpAndCreateUserApi = (payload) => {
+    const URL_API = "/v1/api/register/verify";
+    // payload should include: firstName, lastName, email, phone, password, role, otp
+    return axios.post(URL_API, payload, { skipAuth: true });
+}

@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/layout/header";
 import axios from "./util/axios.customize";
 import { useContext, useEffect } from "react";
@@ -7,6 +7,7 @@ import { Spin } from "antd";
 
 function App() {
   const { setAuth, appLoading, setAppLoading } = useContext(AuthContext);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -40,7 +41,11 @@ function App() {
         </div>
       ) : (
         <div>
-          <Header />
+          {(() => {
+            const authRoutes = ["/login", "/register", "/forgot-password", "/reset-password"];
+            const shouldHideHeader = authRoutes.includes(location.pathname);
+            return shouldHideHeader ? null : <Header />;
+          })()}
           <Outlet />
         </div>
       )}

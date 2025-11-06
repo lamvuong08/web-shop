@@ -5,12 +5,21 @@ const instance = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL
 });
 
-// Add a defaults after instance
-instance.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("access_token")}`;
+// Do NOT set static Authorization; attach dynamically per request
 
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
-    // Do something before request is sent
+    if (config && config.skipAuth) {
+        if (config?.headers?.Authorization) delete config.headers['Authorization'];
+        return config;
+    }
+    const token = localStorage.getItem("access_token");
+    if (token) {
+        config.headers = config.headers ?? {};
+        config.headers['Authorization'] = `Bearer ${token}`;
+    } else if (config?.headers?.Authorization) {
+        delete config.headers['Authorization'];
+    }
     return config;
 }, function (error) {
     // Do something with request error
