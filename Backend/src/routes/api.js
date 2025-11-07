@@ -7,7 +7,13 @@ const {
     forgotPassword, 
     resetPassword,
     sendRegisterOtp,
-    verifyRegisterOtp
+    verifyRegisterOtp,
+
+    handleListUsers,
+    handleGetUserById,
+    handleCreateUser,
+    handleUpdateUser,
+    handleDeleteUser
 } = require('../controllers/userController');
 const auth = require('../middleware/auth');
 const delay = require('../middleware/delay');
@@ -30,5 +36,11 @@ routerAPI.get("/", (req, res) => {
 });
 routerAPI.get("/user", getUser);
 routerAPI.get("/account", delay, getAccount);
+
+routerAPI.get("/users", handleListUsers);
+routerAPI.get("/users/:id", handleGetUserById);
+routerAPI.post("/users", handleCreateUser);
+routerAPI.put("/users/:id", handleUpdateUser);
+routerAPI.delete("/users/:id", handleDeleteUser);
 
 module.exports = routerAPI; //export default

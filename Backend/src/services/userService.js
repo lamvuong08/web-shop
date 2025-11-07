@@ -161,7 +161,7 @@ const sendRegisterOtpService = async (email) => {
             // Set temporary values for required fields
             name: 'Temporary',
             password: 'temporary',
-            role: 'pending'
+            isVerify: false
         });
 
         // Send OTP email
@@ -188,43 +188,28 @@ const sendRegisterOtpService = async (email) => {
 };
 
 const verifyRegisterOtpService = async (payload) => {
-    console.log('>>> [verifyRegisterOtpService] START with payload:', payload);
-
     try {
         const { email, otp, firstName, lastName, password, phone, role } = payload;
-        console.log('>>> [verifyRegisterOtpService] Extracted fields:', { email, otp, firstName, lastName, phone, role });
-
-        // 1️⃣ Find temporary user
-        console.log('>>> [verifyRegisterOtpService] Looking for temp user with email + otp...');
+        
+        // Find temporary user with OTP
         const tempUser = await User.findOne({ 
-            where: { email, otpCode: otp } 
+            where: { 
+                email,
+                otpCode: otp
+            } 
         });
-        console.log('>>> [verifyRegisterOtpService] tempUser found:', !!tempUser);
 
         if (!tempUser) {
-            console.warn('⚠️ [verifyRegisterOtpService] OTP không hợp lệ cho email:', email);
             return { EC: 1, EM: 'OTP không hợp lệ' };
         }
 
-        // 2️⃣ Check OTP expiry
-        console.log('>>> [verifyRegisterOtpService] Checking OTP expiry...');
-        if (!tempUser.otpExpires) {
-            console.warn('⚠️ [verifyRegisterOtpService] otpExpires missing for user:', tempUser.id);
+        if (!tempUser.otpExpires || tempUser.otpExpires.getTime() < Date.now()) {
             return { EC: 2, EM: 'OTP đã hết hạn' };
         }
 
-        console.log('>>> [verifyRegisterOtpService] otpExpires =', tempUser.otpExpires.toLocaleString());
-        if (tempUser.otpExpires.getTime() < Date.now()) {
-            console.warn('⚠️ [verifyRegisterOtpService] OTP expired for email:', email);
-            return { EC: 2, EM: 'OTP đã hết hạn' };
-        }
-
-        // 3️⃣ Update user info
+        // Update user with actual information
         const name = `${lastName ?? ''} ${firstName ?? ''}`.trim();
-        console.log('>>> [verifyRegisterOtpService] Updating user info. Final name:', name);
-
         const hashPassword = await bcrypt.hash(password, saltRounds);
-        console.log('>>> [verifyRegisterOtpService] Password hashed successfully');
 
         await tempUser.update({
             name,
@@ -234,43 +219,129 @@ const verifyRegisterOtpService = async (payload) => {
             otpCode: null,
             otpExpires: null
         });
-        console.log('>>> [verifyRegisterOtpService] User updated successfully (ID:', tempUser.id, ')');
 
-        // 4️⃣ Generate access token
+        // Create access token so frontend can optionally auto-login
         const payloadToken = {
             email: tempUser.email,
             name
         };
-        console.log('>>> [verifyRegisterOtpService] Creating JWT with payload:', payloadToken);
+        const access_token = jwt.sign(payloadToken, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
 
-        const access_token = jwt.sign(payloadToken, process.env.JWT_SECRET, { 
-            expiresIn: process.env.JWT_EXPIRE 
-        });
-        console.log('>>> [verifyRegisterOtpService] JWT generated successfully');
-
-        // 5️⃣ Return success
-        console.log('✅ [verifyRegisterOtpService] Registration verified successfully');
         return { 
             EC: 0, 
             EM: 'Đăng ký thành công',
             access_token,
             user: {
                 id: tempUser.id,
-                name,
+                name: name,
                 email: tempUser.email,
                 role: tempUser.role
             }
         };
-
     } catch (error) {
-        console.error('❌ [verifyRegisterOtpService] ERROR:', error);
-        if (error?.stack) console.error('>>> Stack trace:', error.stack);
-        return { EC: 3, EM: 'Lỗi hệ thống', DT: error.message };
-    } finally {
-        console.log('>>> [verifyRegisterOtpService] END\n');
+        console.error('verifyRegisterOtpService error:', error);
+        return { EC: 3, EM: 'Lỗi hệ thống' };
     }
 };
 
+// Lấy DS tất cả người dùng
+const listUsers = async (options = {}) => {
+    try {
+        const users = await User.findAll({
+            attributes: { exclude: ['password'] },
+            ...options
+        });
+        return { EC: 0, EM: 'Lấy danh sách user thành công', data: users };
+    } catch (error) {
+        console.error('getAllUsersService error:', error);
+        return { EC: 1, EM: 'Lỗi hệ thống khi lấy danh sách user' };
+    }
+};
+
+// Lấy thông tin người dùng theo ID
+const getUserById = async (id) => {
+    try {
+        const user = await User.findByPk(id, { attributes: { exclude: ['password'] } });
+        if (!user) return { EC: 1, EM: 'Không tìm thấy user' };
+        return { EC: 0, EM: 'Lấy thông tin user thành công', data: user };
+    } catch (error) {
+        console.error('getUserByIdService error:', error);
+        return { EC: 2, EM: 'Lỗi hệ thống khi lấy user' };
+    }
+};
+
+// Tạo người dùng mới
+const createUser = async (payload) => {
+    try {
+        const { name, email, password, role } = payload;
+
+        // Kiểm tra các trường bắt buộc
+        if (!name || !email || !password) {
+            return { EC: 1, EM: 'Thiếu thông tin bắt buộc (name, email, password)' };
+        }
+
+        // Kiểm tra email trùng
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser) {
+            return { EC: 2, EM: 'Email đã tồn tại' };
+        }
+
+        // Hash password
+        const hashPassword = await bcrypt.hash(password, saltRounds);
+
+        // Tạo user
+        const newUser = await User.create({
+            name,
+            email,
+            password: hashPassword,
+            role: role && ['customer', 'admin'].includes(role) ? role : 'customer'
+        });
+
+        // Ẩn password khi trả về
+        const { password: _, ...userData } = newUser.toJSON();
+
+        return { EC: 0, EM: 'Tạo user thành công', data: userData };
+    } catch (error) {
+        console.error('createUserCrudService error:', error);
+        return { EC: 3, EM: 'Lỗi hệ thống khi tạo user' };
+    }
+};
+
+// Cập nhật thông tin user
+const updateUser = async (id, updates) => {
+    try {
+        const user = await User.findByPk(id);
+        if (!user) return { EC: 1, EM: 'Không tìm thấy user' };
+
+        // Không cho phép cập nhật email hoặc password trực tiếp qua API này
+        const allowedFields = ['name', 'role', 'phone'];
+        const updateData = {};
+
+        for (const key of allowedFields) {
+            if (updates[key] !== undefined) updateData[key] = updates[key];
+        }
+
+        await user.update(updateData);
+        return { EC: 0, EM: 'Cập nhật user thành công', data: user };
+    } catch (error) {
+        console.error('updateUserService error:', error);
+        return { EC: 2, EM: 'Lỗi hệ thống khi cập nhật user' };
+    }
+};
+
+//  Xoá người dùng
+const deleteUser = async (id) => {
+    try {
+        const user = await User.findByPk(id);
+        if (!user) return { EC: 1, EM: 'Không tìm thấy user để xoá' };
+
+        await user.destroy();
+        return { EC: 0, EM: 'Xoá user thành công' };
+    } catch (error) {
+        console.error('deleteUserService error:', error);
+        return { EC: 2, EM: 'Lỗi hệ thống khi xoá user' };
+    }
+};
 
 module.exports = {
     createUserService,
@@ -279,5 +350,11 @@ module.exports = {
     forgotPasswordService,
     resetPasswordService,
     sendRegisterOtpService,
-    verifyRegisterOtpService
+    verifyRegisterOtpService,
+    
+    listUsers,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser
 }

@@ -26,9 +26,9 @@ const User = sequelize.define('User', {
 		allowNull: false
 	},
 	role: {
-		type: DataTypes.STRING(50),
+		type: DataTypes.ENUM('customer', 'admin'),
 		allowNull: false,
-		defaultValue: 'User'
+		defaultValue: 'customer'
 	},
 	otpCode: {
 		type: DataTypes.STRING(6),
@@ -38,6 +38,11 @@ const User = sequelize.define('User', {
 		type: DataTypes.DATE,
 		allowNull: true
 	},
+	isVerify: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false,
+		defaultValue: false // false = chưa xác thực OTP, true = đã xác thực
+	}
 
 }, {
 	tableName: 'users',

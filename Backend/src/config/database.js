@@ -21,6 +21,8 @@ const connection = async () => {
 	
 	// Import models after sequelize is ready
 	const User = require('../models/user');
+	const Category = require('../models/categories');
+	const Product = require('../models/product');
 
 	// Auto sync models to DB. For production, consider migrations instead.
 	await sequelize.sync({ alter: true });
