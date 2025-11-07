@@ -1,0 +1,33 @@
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1890ff; /* blue */
+  color: #fff;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.admin-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.admin-brand {
+  font-size: 20px;
+  font-weight: 700;
+  margin-right: 12px;
+  color: #fff;
+}
+
+.admin-avatar {
+  background-color: rgba(255,255,255,0.2);
+  cursor: pointer;
+}
+
+.admin-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}

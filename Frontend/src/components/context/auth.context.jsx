@@ -5,6 +5,7 @@ export const AuthContext = createContext({
     user: {
         email: "",
         name: "",
+        role: "",
     },
     appLoading: true,
 });
@@ -15,8 +16,11 @@ export const AuthWrapper = (props) => {
         user: {
             email: "",
             name: "",
+            role: "",
         }
     });
+
+    // auth state is managed here
 
     const [appLoading, setAppLoading] = useState(true);
 

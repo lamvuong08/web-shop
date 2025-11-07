@@ -35,9 +35,6 @@ export const forgotPasswordApi = (email) => {
 export const resetPasswordApi = async (email, otp, password) => {
     try {
         const URL_API = "/v1/api/reset-password";
-        console.log('🌐 Making API request to:', URL_API);
-        console.log('📦 Request payload:', { email, otp: '******', password: '******' });
-        
         const response = await axios.post(
             URL_API, 
             { email, otp, password },
@@ -49,16 +46,12 @@ export const resetPasswordApi = async (email, otp, password) => {
             }
         );
 
-        console.log('✅ API response:', response);
-        
         if (!response) {
             throw new Error('No response from server');
         }
 
         return response;
     } catch (error) {
-        console.error('❌ Reset password API error:', error);
-        
         if (error.response?.data) {
             return error.response.data;
         }
@@ -104,4 +97,10 @@ export const updateUserApi = (id, updates) => {
 export const deleteUserApi = (id) => {
     const URL_API = `/v1/api/users/${id}`;
     return axios.delete(URL_API);
+};
+
+// Lấy thống kê tổng quan cho dashboard
+export const getDashboardStatsApi = () => {
+    const URL_API = "/v1/api/dashboard/stats";
+    return axios.get(URL_API);
 };

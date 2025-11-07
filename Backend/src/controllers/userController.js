@@ -1,11 +1,16 @@
 const { 
-    createUserService, 
-    loginService, 
-    getUserService, 
-    forgotPasswordService, 
-    resetPasswordService,
-    sendRegisterOtpService,
-    verifyRegisterOtpService
+  createUserService, 
+  loginService, 
+  getUserService, 
+  forgotPasswordService, 
+  resetPasswordService,
+  sendRegisterOtpService,
+  verifyRegisterOtpService,
+  listUsers,
+  getUserById,
+  createUser: createUserCrud,
+  updateUser,
+  deleteUser
 } = require('../services/userService');
 const User = require('../models/user');
 const { sendMail } = require('../utils/mailer');
@@ -176,8 +181,12 @@ const handleDeleteUser = async (req, res) => {
         const { id } = req.params;
         if (!id) return res.status(400).json({ EC: 1, EM: 'Thiếu ID user để xoá' });
 
-        const result = await deleteUser(id);
-        return res.status(200).json(result);
+    const result = await deleteUser(id);
+    // If service returned an object with EC/EM, forward it; otherwise wrap success
+    if (result && typeof result === 'object' && (result.EC !== undefined || result.EM !== undefined)) {
+      return res.status(200).json(result);
+    }
+    return res.status(200).json({ EC: 0, EM: 'Xoá user thành công' });
     } catch (error) {
         console.error('handleDeleteUser error:', error);
         return res.status(500).json({ EC: 2, EM: 'Lỗi server khi xoá user' });

@@ -1,0 +1,46 @@
+.sidenav {
+    height: 100%;
+    background-color: #001529;
+    color: white;
+}
+
+.sidenav-header {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidenav-header h2 {
+    color: white;
+    margin: 0;
+    font-size: 20px;
+}
+
+/* Override Ant Design Menu Styles */
+.sidenav .ant-menu {
+    background-color: transparent;
+}
+
+.sidenav .ant-menu-item {
+    margin: 4px 0;
+}
+
+.sidenav .ant-menu-item a {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.sidenav .ant-menu-item-selected {
+    background-color: #1890ff !important;
+}
+
+.sidenav .ant-menu-item-selected a {
+    color: white !important;
+}
+
+.sidenav .ant-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidenav .ant-menu-item:hover a {
+    color: white;
+}
