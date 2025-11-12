@@ -9,30 +9,20 @@ const AdminHeader = ({ height = 64 }) => {
   const navigate = useNavigate();
   const { auth, setAuth } = useContext(AuthContext);
 
-  // Try to get user from context first, fallback to localStorage
   const user = auth?.user || JSON.parse(localStorage.getItem('user') || '{}');
   const role = user?.role || '';
 
   const handleLogout = () => {
-    localStorage.clear();
+    // remove only auth-related keys
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setAuth({ isAuthenticated: false, user: { email: '', name: '', role: '' } });
     navigate('/');
   };
 
   const menu = (
     <Menu>
-      {role === 'admin' ? (
-        <>
-          <Menu.Item key="admin" onClick={() => navigate('/admin/dashboard')}>
-            Trang quản lý
-          </Menu.Item>
-        </>
-      ) : (
-        <Menu.Item key="profile" onClick={() => navigate('/user/profile')}>
-          Hồ sơ của tôi
-        </Menu.Item>
-      )}
-      <Menu.Divider />
       <Menu.Item key="logout" onClick={handleLogout}>
         Đăng xuất
       </Menu.Item>
@@ -42,13 +32,14 @@ const AdminHeader = ({ height = 64 }) => {
   return (
     <div className="admin-header" style={{ height }}>
       <div className="admin-header-left">
-        <div className="admin-brand">LVShop</div>
+        <div className="admin-brand" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>LVShop</div>
       </div>
 
       <div className="admin-header-right">
         <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
-          <div style={{ cursor: 'pointer' }}>
+          <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
             <Avatar className="admin-avatar" size="large" icon={<UserOutlined />} />
+            <span className="admin-username">{user?.name || user?.email || ''}</span>
           </div>
         </Dropdown>
       </div>

@@ -63,11 +63,7 @@ const ResetPasswordPage = () => {
         duration: 0 
       });
 
-      // Debug log
-      console.log('🔄 Sending reset password request for:', email);
-
       const res = await resetPasswordApi(email, otp, password);
-      console.log('📝 Server response:', res);
 
       // Xử lý kết quả
       if (res && typeof res === 'object') {

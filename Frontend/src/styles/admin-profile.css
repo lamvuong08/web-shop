@@ -1,0 +1,123 @@
+.admin-profile {
+    padding: 24px;
+}
+
+.admin-profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.admin-profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.admin-profile-avatar .anticon {
+    font-size: 56px;
+    color: #bfbfbf;
+}
+
+.admin-profile-title {
+    font-size: 22px;
+    margin: 6px 0;
+}
+
+.admin-profile-name {
+    font-size: 18px;
+    margin: 4px 0;
+    font-weight: 600;
+}
+
+.admin-profile-role-container {
+    margin: 8px 0;
+}
+
+/* Red bordered tag with light red background */
+.role-tag {
+    font-size: 13px;
+    padding: 4px 10px;
+    border: 1px solid #ff4d4f;
+    color: #ff4d4f;
+    background: rgba(255, 77, 79, 0.06);
+    line-height: 18px;
+}
+
+/* Center the card and limit width so info sits near the center */
+.admin-profile-info {
+    margin-top: 16px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px 24px;
+}
+
+/* Info rows: label column fixed width so values align in a column near center */
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.info-label {
+    color: #8c8c8c;
+    display: flex;
+    align-items: center;
+    width: 210px; /* fixed width aligns values */
+}
+
+.info-label .anticon {
+    margin-right: 8px;
+    color: #8c8c8c;
+}
+
+.info-value {
+    flex: 1;
+    color: #222;
+}
+
+.info-value.active {
+    color: #52c41a;
+}
+
+/* Edit button: smaller, rounded pill, centered */
+.edit-button {
+    width: 220px;
+    margin: 60px auto 0;
+    height: 42px;
+    display: block; /* ensure margin:auto centers the button */
+    text-align: center;
+    padding: 0 18px;
+    line-height: 42px;
+    background-color: #003366 !important; /* xanh đậm */
+    border-color: #003366 !important;     /* xanh đậm */
+    border-radius: 999px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.edit-button:hover {
+    background-color: #334a6a !important;
+    border-color: #334a6a !important;
+}
+
+.edit-button .anticon {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+/* small responsive tweak */
+@media (max-width: 480px) {
+    .info-label { width: 140px; }
+    .admin-profile-info { padding: 16px; }
+    .edit-button { width: 100%; }
+}
+

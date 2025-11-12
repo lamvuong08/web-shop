@@ -1,46 +1,60 @@
 .sidenav {
     height: 100%;
-    background-color: #001529;
-    color: white;
+    background-color: #ffffff; /* trắng */
+    color: #333;
+    border-right: 1px solid #e6e6e6;
 }
 
+/* Header */
 .sidenav-header {
     padding: 16px;
     text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .sidenav-header h2 {
-    color: white;
+    color: #333;
+    font-size: 18px;
     margin: 0;
-    font-size: 20px;
+    font-weight: 600;
 }
 
-/* Override Ant Design Menu Styles */
+/* Menu */
 .sidenav .ant-menu {
     background-color: transparent;
+    border-right: none;
 }
 
-.sidenav .ant-menu-item {
-    margin: 4px 0;
+/* Text item */
+.sidenav .ant-menu-item a,
+.sidenav .ant-menu-submenu-title {
+    color: #555 !important;
+    font-weight: 500;
 }
 
-.sidenav .ant-menu-item a {
-    color: rgba(255, 255, 255, 0.65);
+/* Hover dễ nhìn */
+.sidenav .ant-menu-item:hover,
+.sidenav .ant-menu-submenu-title:hover {
+    background-color: #f5f7fa !important;
 }
 
+/* Item được chọn */
 .sidenav .ant-menu-item-selected {
-    background-color: #1890ff !important;
+    background-color: #e6f4ff !important;
+    border-radius: 6px;
 }
 
 .sidenav .ant-menu-item-selected a {
-    color: white !important;
+    color: #1677ff !important;
+    font-weight: 600;
 }
 
-.sidenav .ant-menu-item:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+/* Icon */
+.sidenav .ant-menu-item svg,
+.sidenav .ant-menu-submenu-title svg {
+    color: #777;
 }
 
-.sidenav .ant-menu-item:hover a {
-    color: white;
+.sidenav .ant-menu-item-selected svg {
+    color: #1677ff;
 }

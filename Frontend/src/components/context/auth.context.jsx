@@ -11,16 +11,34 @@ export const AuthContext = createContext({
 });
 
 export const AuthWrapper = (props) => {
-    const [auth, setAuth] = useState({
-        isAuthenticated: false,
-        user: {
-            email: "",
-            name: "",
-            role: "",
+    const [auth, setAuth] = useState(() => {
+        // Khôi phục trạng thái auth từ localStorage khi component mount
+        const token = localStorage.getItem('access_token');
+        const userStr = localStorage.getItem('user');
+        if (token && userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                return {
+                    isAuthenticated: true,
+                    user: {
+                        email: user.email || "",
+                        name: user.name || "",
+                        role: user.role || "",
+                    }
+                };
+            } catch (e) {
+                console.error('Error parsing user from localStorage:', e);
+            }
         }
+        return {
+            isAuthenticated: false,
+            user: {
+                email: "",
+                name: "",
+                role: "",
+            }
+        };
     });
-
-    // auth state is managed here
 
     const [appLoading, setAppLoading] = useState(true);
 

@@ -8,7 +8,7 @@ const { sendMail } = require('../utils/mailer');
 
 const saltRounds = 10;
 
-const createUserService = async (name, email, password) => {
+const createUserService = async (name, email, password, phone) => {
     try {
         //check user exist
         const user = await User.findOne({ where: { email } });
@@ -25,6 +25,7 @@ const createUserService = async (name, email, password) => {
             name: name,
             email: email,
             password: hashPassword,
+            phone: phone || null,
             role: "User"
         });
         return result;
@@ -294,6 +295,7 @@ const createUser = async (payload) => {
             name,
             email,
             password: hashPassword,
+            phone: payload.phone || null,
             role: role && ['customer', 'admin'].includes(role) ? role : 'customer'
         });
 

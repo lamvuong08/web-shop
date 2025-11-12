@@ -40,18 +40,17 @@ const Sidenav = ({ color = 'light' }) => {
     // cấu hình menu theo role
     const menuConfig = {
         admin: [
-            { key: '/admin/dashboard', label: 'Báo cáo & Thống kê', path: '/admin/dashboard', icon: <DashboardOutlined /> },
+            { key: '/admin/dashboard', label: 'Tổng quan', path: '/admin/dashboard', icon: <DashboardOutlined /> },
             { key: '/admin/users', label: 'Quản lý người dùng', path: '/admin/users', icon: <UserOutlined /> },
             { key: '/admin/profile', label: 'Hồ sơ', path: '/admin/profile', icon: <ProfileOutlined /> }
         ],
         user: [
-            { key: '/user/profile', label: 'Hồ sơ cá nhân', path: '/user/profile', icon: <ProfileOutlined /> },
-            { key: '/user/orders', label: 'Đơn hàng của tôi', path: '/user/orders', icon: <ShoppingCartOutlined /> },
-            { key: '/', label: 'Về trang chủ', path: '/', icon: <HomeOutlined /> },
+
         ],
     };
 
-    const menuItems = menuConfig[role] || menuConfig.user;
+    const isAdminPath = pathname.startsWith('/admin');
+    const menuItems = isAdminPath ? menuConfig.admin : (menuConfig[role] || menuConfig.user);
 
     // open submenu theo route
     const [openKeys, setOpenKeys] = useState([]);

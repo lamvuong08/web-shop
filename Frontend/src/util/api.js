@@ -94,9 +94,15 @@ export const updateUserApi = (id, updates) => {
 };
 
 // Xoá user
-export const deleteUserApi = (id) => {
+export const deleteUserApi = async (id) => {
     const URL_API = `/v1/api/users/${id}`;
-    return axios.delete(URL_API);
+    try {
+        const response = await axios.delete(URL_API);
+        return response;
+    } catch (error) {
+        console.error('deleteUserApi error:', error);
+        throw error;
+    }
 };
 
 // Lấy thống kê tổng quan cho dashboard

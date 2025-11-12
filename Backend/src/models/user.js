@@ -30,6 +30,10 @@ const User = sequelize.define('User', {
 		allowNull: false,
 		defaultValue: 'customer'
 	},
+	phone: {
+		type: DataTypes.STRING(20),
+		allowNull: true
+	},
 	otpCode: {
 		type: DataTypes.STRING(6),
 		allowNull: true

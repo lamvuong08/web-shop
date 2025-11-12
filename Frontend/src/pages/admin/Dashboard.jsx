@@ -42,7 +42,7 @@ const Dashboard = () => {
 
     return (
         <div style={{ padding: '24px' }}>
-            <h2 style={{ marginBottom: '24px' }}>Tổng quan</h2>
+            <h2 style={{  marginTop: '24px', marginBottom: '24px' }}>Tổng quan</h2>
             <Row gutter={[16, 16]}>
                 <Col xs={24} sm={12} lg={6}>
                     <Card>

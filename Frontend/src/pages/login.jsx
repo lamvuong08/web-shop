@@ -23,7 +23,6 @@ const LoginPage = () => {
       });
 
       // Determine role: prefer server-provided role. If missing, try to fetch current user (/v1/api/user)
-      // retry a few times to allow backend to recognize token/session, then fallback to /users if necessary.
       let role = res?.user?.role ?? '';
       if (!role) {
         const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -41,17 +40,14 @@ const LoginPage = () => {
               }
             }
             if (!role) {
-              // wait a bit before retrying
               await wait(300);
             }
           } catch (err) {
-            // getUserApi attempt failed
             await wait(300);
           }
         }
 
         if (!role) {
-          // final fallback: try listing all users (may be restricted on some servers)
           try {
             const allRes = await getAllUsersApi();
             
@@ -68,24 +64,20 @@ const LoginPage = () => {
         }
       }
 
-      // Save user info to localStorage (including derived role)
-      localStorage.setItem('user', JSON.stringify({
-        email: res?.user?.email,
-        name: res?.user?.name,
-        role
-      }));
-
+      // Lưu thông tin user vào localStorage
+      const user = {
+        email: res?.user?.email ?? '',
+        name: res?.user?.name ?? '',
+        role: role ?? '',
+      };
+      localStorage.setItem('user', JSON.stringify(user));
+      
       setAuth({
         isAuthenticated: true,
-        user: {
-          email: res?.user?.email ?? '',
-          name: res?.user?.name ?? '',
-          role: role ?? '',
-        },
+        user,
       });
 
-  // Navigate based on user role
-  navigate(role === 'admin' ? '/admin/dashboard' : '/', { replace: true });
+  navigate('/', { replace: true });
     } else {
       notification.error({
         message: 'Đăng nhập thất bại',
